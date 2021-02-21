@@ -4,45 +4,117 @@
 function createWidget(moduleName, moduleData, temperature_unit) {
   let widget = new ListWidget()
 
-  widget.backgroundColor = Color.black()
 
-  let title = widget.addText(moduleName)
-  title.font = Font.boldSystemFont(18)
-  title.minimumScaleFactor = 0.8
+  const gradient = new LinearGradient();
+
+  gradient.colors = [new Color("13262E"), new Color("203A43")];
+  gradient.locations = [0.0, 1];
+
+  widget.backgroundGradient = gradient;
+
+
+  let title = widget.addText(moduleName.toUpperCase())
+  title.font = Font.boldSystemFont(10)
   title.lineLimit = 2
   title.textColor = Color.white()
 
-  widget.addSpacer(8)
+  widget.addSpacer(4)
 
   // Temperature
 
   let temperature = widget.addText(
     "" + moduleData.Temperature + temperature_unit
   )
-  temperature.font = Font.regularSystemFont(24)
+  temperature.font = Font.boldRoundedSystemFont(26)
   temperature.textColor = Color.white()
-  temperature.centerAlignText()
+  temperature.leftAlignText()
 
   widget.addSpacer(8)
+  
+  let dataRow = widget.addStack()
+  dataRow.layoutVertically()
+  
+  // Humidity
+  
+
+  if ("Humidity" in moduleData) {
+    humidityValue = moduleData.Humidity
+
+    let humidityColor = Color.green();
+
+    if (humidityValue <= 35) {
+      humdityColor = Color.red()
+    } else if (humidityValue <= 45) {
+      humdityColor = Color.orange()
+    }
+        
+    let humidityRow = dataRow.addStack()
+    humidityRow.centerAlignContent()
+
+    let humidityIconCol = humidityRow.addStack()
+    humidityIconCol.layoutVertically()
+    humidityIconCol.size = new Size(12, 12)
+    humiditySF = SFSymbol.named("drop")	
+    humiditySF.applyFont(Font.systemFont(9))
+    humiditySF.applyMediumWeight()
+    let humidityIcon = humidityIconCol.addImage(humiditySF.image);
+    humidityIcon.resizeable = false
+    humidityIcon.tintColor = humidityColor
+    
+    humidityRow.addSpacer(8)   
+
+    let humidity = humidityRow.addText(humidityValue + " %")
+    humidity.font = Font.mediumRoundedSystemFont(15)
+    humidity.leftAlignText()
+    humidity.textColor = humidityColor
+
+    dataRow.addSpacer(4)
+  }
 
   // CO2
 
   if ("CO2" in moduleData) {
+
     co2value = moduleData.CO2
+    
+    let co2Row = dataRow.addStack()
+    co2Row.centerAlignContent()
+       
+    let co2Color = Color.green();
+    let co2SF = SFSymbol.named("aqi.high")
 
-    let co2 = widget.addText("CO₂: " + co2value + " ppm")
-    co2.font = Font.regularSystemFont(16)
-    co2.centerAlignText()
 
-    co2.textColor = Color.green()
-    if (co2value >= 1000) {
-      co2.textColor = Color.orange()
-    } else if (co2value >= 1500) {
-      co2.textColor = Color.red()
+    if (co2value >= 1500) {
+      co2Color = Color.red()
+      co2SF = SFSymbol.named("aqi.low")
+    } else if (co2value >= 1000) {
+      co2Color = Color.orange()
+      co2SF = SFSymbol.named("aqi.medium")
     }
+    
+    let co2IconCol = co2Row.addStack()
+    co2IconCol.layoutVertically()
+    co2IconCol.size = new Size(12, 12)
+    
+    co2SF.applyFont(Font.systemFont(9))
+    co2SF.applyMediumWeight()
+    let co2Icon = co2IconCol.addImage(co2SF.image);
+    co2Icon.resizable = false
+    co2Icon.tintColor = co2Color
+    
+    co2Row.addSpacer(8)   
 
-    widget.addSpacer(8)
+    let co2 = co2Row.addText(co2value + " ppm")
+    co2.font = Font.mediumRoundedSystemFont(15)
+    co2.leftAlignText()
+    
+    co2.textColor = co2Color
+    
+    dataRow.addSpacer(4)
   }
+  
+  dataRow.addSpacer(8)
+  widget.addSpacer()
 
   // Timestamp
 
@@ -52,11 +124,12 @@ function createWidget(moduleName, moduleData, temperature_unit) {
   dateFormatter.useShortTimeStyle()
   let strDate = dateFormatter.string(date)
 
-  let footer = widget.addText(strDate)
+  let footer = widget.addText(strDate)		
+  footer.font = Font.systemFont(10)
   footer.minimumScaleFactor = 0.5
   footer.lineLimit = 1
-  footer.textColor = Color.lightGray()
-  footer.centerAlignText()
+  footer.textColor = new Color("587782")
+  footer.leftAlignText()
 
   return widget
 }
@@ -119,7 +192,7 @@ temperature_unit = data.user.administrative.unit === 0 ? "°C" : "°F"
 
 if (config.runsInApp) {
   // For in-app testing
-  const module_name = "Indoor"
+  const module_name = "Innen"
 
   let widget = createWidget(
     module_name,
