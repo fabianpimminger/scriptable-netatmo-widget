@@ -2,6 +2,8 @@
 
 Widget for the [Scriptable][app] iOS app to display data from [Netatmo][netatmo] personal weather stations.
 
+Based on [olf/scriptable-netatmo-widget](https://github.com/olf/scriptable-netatmo-widget).
+
 ## Installation
 
 Pre-requisite: You need to [register a new application][newapp] in the [Netatmo Developer Portal][devportal] to get readings from your personal weather station.
