@@ -24,5 +24,5 @@ Pre-requisite: You need to [register a new application][newapp] in the [Netatmo 
 [devportal]: https://dev.netatmo.com/
 [netatmo]: https://www.netatmo.com/weather
 [newapp]: https://dev.netatmo.com/apps/createanapp
-[preview]: preview.png
+[preview]: preview.jpg
 [config]: widget-config.png
